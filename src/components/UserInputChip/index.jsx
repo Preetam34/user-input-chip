@@ -6,20 +6,26 @@ const UserInputChip = () => {
   const [users, setUsers] = useState(userData);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+  
   const handleInputChange = (event) => {
     let value = event.target.value;
     setInputValue(value);
 
-    const filtered = users.filter((user) =>
-      user.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setUsers(filtered);
+    if (!value.trim()) {
+      setUsers(userData);
+    } else {
+      const filtered = users.filter((user) =>
+        user.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setUsers(filtered);
+    }
   };
 
   const handleInputClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
-    setUsers([...selectedUsers, ...users]);
+    if (!isDropdownOpen) {
+      setUsers(userData);
+    }
   };
 
   const handleUserSelect = (user) => {
@@ -34,6 +40,8 @@ const UserInputChip = () => {
   };
 
   return (
+
+  
     <div className="user-dropdown-container">
       <h2 className="dropdown-title">Pick Users</h2>
       <div className="selected-chips-container">
