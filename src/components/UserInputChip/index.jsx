@@ -81,7 +81,7 @@ const UserInputChip = () => {
             placeholder="Add a new user...."
             className="input-field"
           />
-          {isDropdownOpen && (
+          {isDropdownOpen && users.length > 0 && (
             <ul className="dropdown-list">
               {users.map((user) => (
                 <li

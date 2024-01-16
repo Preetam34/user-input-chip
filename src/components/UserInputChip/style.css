@@ -19,7 +19,7 @@
   margin: 0;
   position: absolute;
   top: 100%;
-  left: 20%;
+  left: 0;
   width: 25rem;
   max-height: 20rem;
   overflow-y: auto;
@@ -100,4 +100,5 @@
   display: flex;
   border-bottom: 2px solid blue;
   padding-bottom: 5px;
+  flex-wrap: wrap;
 }
