@@ -1,23 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import userData from "./userData";
 import "./style.css";
+
 const UserInputChip = () => {
   const [inputValue, setInputValue] = useState("");
   const [users, setUsers] = useState(userData);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [filteredDropdownUsers, setFilteredDropdownUsers] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  useEffect(() => {
+    setFilteredDropdownUsers(
+      users.filter(
+        (user) =>
+          !selectedUsers.some((selectedUser) => selectedUser.id === user.id)
+      )
+    );
+  }, [users, selectedUsers]);
+
+  const renderHighlightedText = (text, inputValue) => {
+    if (!inputValue.trim()) {
+      return text;
+    }
+
+    const regex = new RegExp(`(${inputValue})`, "gi");
+    const parts = text.split(regex);
+
+    return (
+      <span>
+        {parts.map((part, index) =>
+          regex.test(part) ? (
+            <span key={index} style={{ color: "blue", fontWeight: "bold" }}>
+              {part}
+            </span>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </span>
+    );
+  };
+
   const handleInputChange = (event) => {
-    let value = event.target.value;
+    const value = event.target.value;
     setInputValue(value);
 
     if (!value.trim()) {
-      setUsers(userData);
-    } else {
-      const filtered = users.filter((user) =>
-        user.name.toLowerCase().includes(value.toLowerCase())
+      setFilteredDropdownUsers(
+        users.filter(
+          (user) =>
+            !selectedUsers.some((selectedUser) => selectedUser.id === user.id)
+        )
       );
-      setUsers(filtered);
+    } else {
+      const filtered = users.filter(
+        (user) =>
+          user.name.toLowerCase().includes(value.toLowerCase()) &&
+          !selectedUsers.some((selectedUser) => selectedUser.id === user.id)
+      );
+      setFilteredDropdownUsers(filtered);
     }
   };
 
@@ -28,12 +69,10 @@ const UserInputChip = () => {
   const handleUserSelect = (user) => {
     setInputValue("");
     setSelectedUsers([...selectedUsers, user]);
-    setUsers(users.filter((u) => u.id !== user.id));
   };
 
   const handleChipRemove = (user) => {
     setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id));
-    setUsers([...users, user]);
   };
 
   return (
@@ -43,7 +82,7 @@ const UserInputChip = () => {
         <div className="selected-chips-container">
           {selectedUsers.map((user) => (
             <div
-              key={"user-" + user.id}
+              key={user.id}
               className="chip"
               onClick={() => handleChipRemove(user)}
             >
@@ -81,19 +120,24 @@ const UserInputChip = () => {
             placeholder="Add a new user...."
             className="input-field"
           />
-          {isDropdownOpen && users.length > 0 && (
+          {isDropdownOpen && filteredDropdownUsers.length > 0 && (
             <ul className="dropdown-list">
-              {users.map((user) => (
+              {filteredDropdownUsers.map((user) => (
                 <li
                   key={"user-" + user.id}
-                  onClick={() => handleUserSelect(user)}
+                  onClick={() => {
+                    handleUserSelect(user);
+                    handleInputClick();
+                  }}
                 >
                   <img
                     className="profile-icon"
                     src={user.profilePic}
                     alt={user.name}
                   />
-                  <span className="user-name">{user.name} </span>
+                  <span className="user-name">
+                    {renderHighlightedText(user.name, inputValue)}
+                  </span>
                   <span className="user-email"> {user.email}</span>
                 </li>
               ))}
