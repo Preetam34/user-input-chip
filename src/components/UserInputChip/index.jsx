@@ -1,84 +1,14 @@
 import React, { useState } from "react";
-import user1 from "../../assets/user1.avif";
-import user2 from "../../assets/user2.jpg";
-import user3 from "../../assets/user3.avif";
-import user4 from "../../assets/user4.avif";
-import user5 from "../../assets/user5.avif";
-import user6 from "../../assets/user6.avif";
-import user7 from "../../assets/user7.avif";
-import user8 from "../../assets/user8.avif";
-import user9 from "../../assets/user9.avif";
-import user10 from "../../assets/user10.avif";
+import userData from "./userData";
 import "./style.css";
 const UserInputChip = () => {
   const [inputValue, setInputValue] = useState("");
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      profilePic: user1,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      profilePic: user2,
-    },
-    {
-      id: 3,
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      profilePic: user3,
-    },
-    {
-      id: 4,
-      name: "Bob Johnson",
-      email: "bob.johnson@example.com",
-      profilePic: user4,
-    },
-    {
-      id: 5,
-      name: "Eva Miller",
-      email: "eva.miller@example.com",
-      profilePic: user5,
-    },
-    {
-      id: 6,
-      name: "Charlie Brown",
-      email: "charlie.brown@example.com",
-      profilePic: user6,
-    },
-    {
-      id: 7,
-      name: "Grace Davis",
-      email: "grace.davis@example.com",
-      profilePic: user7,
-    },
-    {
-      id: 8,
-      name: "Daniel White",
-      email: "daniel.white@example.com",
-      profilePic: user8,
-    },
-    {
-      id: 9,
-      name: "Olivia Taylor",
-      email: "olivia.taylor@example.com",
-      profilePic: user9,
-    },
-    {
-      id: 10,
-      name: "Samuel Turner",
-      email: "samuel.turner@example.com",
-      profilePic: user10,
-    },
-  ]);
+  const [users, setUsers] = useState(userData);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleInputChange = (event) => {
-    const value = event.target.value;
+    let value = event.target.value;
     setInputValue(value);
 
     const filtered = users.filter((user) =>
@@ -94,9 +24,7 @@ const UserInputChip = () => {
 
   const handleUserSelect = (user) => {
     setInputValue("");
-
     setSelectedUsers([...selectedUsers, user]);
-
     setUsers(users.filter((u) => u.id !== user.id));
   };
 
@@ -107,11 +35,11 @@ const UserInputChip = () => {
 
   return (
     <div className="user-dropdown-container">
-      <h3 className="dropdown-title">Pick Users</h3>
+      <h2 className="dropdown-title">Pick Users</h2>
       <div className="selected-chips-container">
         {selectedUsers.map((user) => (
           <div
-            key={user.id}
+            key={"user-" + user.id}
             className="chip"
             onClick={() => handleChipRemove(user)}
           >
@@ -130,9 +58,9 @@ const UserInputChip = () => {
                 className="cross-icon"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
@@ -151,7 +79,7 @@ const UserInputChip = () => {
       {isDropdownOpen && (
         <ul className="dropdown-list">
           {users.map((user) => (
-            <li key={user.id} onClick={() => handleUserSelect(user)}>
+            <li key={"user-" + user.id} onClick={() => handleUserSelect(user)}>
               <img
                 className="profile-icon"
                 src={user.profilePic}
